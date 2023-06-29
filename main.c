@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "bTree.h"
+#include <time.h>
 
 int main(){
 
-    int indice, opt, linha, ret, ordem;
-    char nomeArquivo[50];
+    int indice, indiceBusca, opt, linha, ret, ordem, begin, end;
+    float time_spent;
+    char nomeArquivo[50] = {"dados.txt"}, result1[11], result2[11], result3[11];
     bTree *arv = NULL;
     
     do {
@@ -54,16 +57,61 @@ int main(){
         case 2:
             system("clear || cls");
 
-            if(arv == NULL){
+           if(arv == NULL){
                 printf("A árvore não foi criada\n\n");
+                break;
+            }
+
+            FILE *arq;
+            arq = fopen(nomeArquivo, "r");
+
+            if(arq == NULL) {
+                printf("O arquivo não está disponível para consulta.");
                 break;
             }
 
             printf("Digite o elemento que deseja procurar: ");
             scanf("%d", &indice);
+
+            //Buca na árvore
+            printf("\nBusca na árvore:\n");
+            begin = clock();
             linha = procuraBTree(arv, indice, retornaRaiz(arv));
-            if(linha != -1) printf("Elemento está na linha: %d\n\n", linha);
-            else printf("Elemento não encontrado na árvore\n\n");
+            
+            if(linha != -1) {
+                printf("Elemento está na linha: %d\n", linha);
+                fseek(arq, 36*(linha-1)+6, 0);
+                fscanf(arq, " %[^\t] %[^\t] %[^\t]", result1, result2, result3);
+                printf("Valores encontrados: %s, %s, %s\n", result1, result2, result3);
+            }
+            else printf("Elemento não encontrado na árvore\n");
+
+            end = clock();
+            time_spent = (float)(end - begin) / CLOCKS_PER_SEC;
+            printf("Tempo: %.10f segundos\n", time_spent);
+
+            //Busca no arquivo
+            printf("\nBusca no arquivo:\n");
+            rewind(arq);
+            begin = clock();
+            
+            while(!feof(arq)){
+                fscanf(arq, " %d", &indiceBusca);
+                if(indiceBusca == indice) {
+                    fscanf(arq, " %[^\t] %[^\t] %[^\t]", result1, result2, result3);
+                    printf("Valores encontrados: %s, %s, %s\n", result1, result2, result3);
+                    break;
+                } else {
+                    fseek(arq, 30, 1);
+                }
+                fgetc(arq);
+            }
+            if (feof(arq)) printf("Elemento não encontrado na árvore\n");
+
+            end = clock();
+            time_spent = (float)(end - begin) / CLOCKS_PER_SEC;
+            printf("Tempo: %.10f segundos\n\n", time_spent);
+            fclose(arq);
             break;
 
         case 3:
