@@ -106,7 +106,7 @@ int main(){
                 }
                 fgetc(arq);
             }
-            if (feof(arq)) printf("Elemento não encontrado na árvore\n");
+            if (feof(arq)) printf("Elemento não encontrado no arquivo\n");
 
             end = clock();
             time_spent = (float)(end - begin) / CLOCKS_PER_SEC;

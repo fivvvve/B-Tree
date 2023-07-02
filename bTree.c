@@ -285,7 +285,7 @@ int procuraBTree(bTree *arv, int indice, no *raiz){
 
     /*Caso elemento seja maior que todos presente no nó raiz faz chamada recursiva passando último
     ponteiro do nó raiz*/
-    procuraBTree(arv, indice, raiz->ponteiros[raiz->n]);
+    return procuraBTree(arv, indice, raiz->ponteiros[raiz->n]);
 }
 
 
